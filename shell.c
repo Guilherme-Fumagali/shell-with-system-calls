@@ -9,7 +9,7 @@
 
 int main() {
   char comando[MAX];
-  char* args[1 + MAX_ARGS] = {};
+  char* args[1 + MAX_ARGS];
   int pid;
 
   while (1) {
@@ -20,9 +20,15 @@ int main() {
     fgets(comando, MAX, stdin);
     comando[strlen(comando) - 1] = '\0';
 
+    char* nomeArquivo = NULL;
     char* str = strtok(comando, " ");
-    for (unsigned i = 0; str != NULL && i < MAX_ARGS; str = strtok(NULL, " "), i ++)
+    for (unsigned i = 0; str != NULL && i < MAX_ARGS; str = strtok(NULL, " "), i ++){
+        if(!strncmp(str, ">", 1)){
+          nomeArquivo = strtok(NULL, " ");
+          break;
+        } 
         args[i] = str;
+    }
 
     if (!strcmp(comando, "exit")) {
       exit(EXIT_SUCCESS);
@@ -32,7 +38,13 @@ int main() {
     if (pid) {
       waitpid(pid, NULL, 0);
     } else {
-      execvp(args[0], &args[0]);
+      if(nomeArquivo){
+        FILE* arq = freopen(nomeArquivo, "w", stdout);
+        execvp(args[0], &args[0]);
+        fclose(arq);
+      }
+      else
+        execvp(args[0], &args[0]);
       printf("Erro ao executar comando!\n");
       exit(EXIT_FAILURE);
     }
