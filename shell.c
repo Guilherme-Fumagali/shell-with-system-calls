@@ -21,10 +21,18 @@ int main() {
     comando[strlen(comando) - 1] = '\0';
 
     char* nomeArquivo = NULL;
+    unsigned op;
     char* str = strtok(comando, " ");
-    for (unsigned i = 0; str != NULL && i < MAX_ARGS; str = strtok(NULL, " "), i ++){
+    unsigned i;
+    for (i = 0; str != NULL && i < MAX_ARGS; str = strtok(NULL, " "), i ++){
         if(!strncmp(str, ">", 1)){
           nomeArquivo = strtok(NULL, " ");
+          op = 0;
+          break;
+        } 
+        if(!strncmp(str, "<", 1)){
+          nomeArquivo = strtok(NULL, " ");
+          op = 1;
           break;
         } 
         args[i] = str;
@@ -39,7 +47,12 @@ int main() {
       waitpid(pid, NULL, 0);
     } else {
       if(nomeArquivo){
-        FILE* arq = freopen(nomeArquivo, "w", stdout);
+        FILE* arq;
+        if(op == 0)
+          arq = freopen(nomeArquivo, "w", stdout);
+        else
+          arq = freopen(nomeArquivo, "r", stdin);
+          
         execvp(args[0], &args[0]);
         fclose(arq);
       }
