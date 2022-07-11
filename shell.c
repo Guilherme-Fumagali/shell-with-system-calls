@@ -13,6 +13,7 @@ int main() {
   int pid;
 
   while (1) {
+    /* Inicializa o vetor de ponteiros dos argumentos */
     for (unsigned i = 0; i < MAX_ARGS + 1; i++)
       args[i] = '\0';
 
@@ -20,10 +21,8 @@ int main() {
     fgets(comando, MAX, stdin);
     comando[strlen(comando) - 1] = '\0';
 
-    char* nomeArquivo = NULL;
-    unsigned op;
-    char* str = strtok(comando, " ");
-    unsigned i;
+    char* str = strtok(comando, " "), nomeArquivo = NULL;
+    unsigned i, op;
     for (i = 0; str != NULL && i < MAX_ARGS; str = strtok(NULL, " "), i ++){
         if(!strncmp(str, ">", 1)){
           nomeArquivo = strtok(NULL, " ");
@@ -46,13 +45,13 @@ int main() {
     if (pid) {
       waitpid(pid, NULL, 0);
     } else {
+      //se alguma operação de arquivo for selecionada
       if(nomeArquivo){
         FILE* arq;
         if(op == 0)
           arq = freopen(nomeArquivo, "w", stdout);
         else
-          arq = freopen(nomeArquivo, "r", stdin);
-          
+          arq = freopen(nomeArquivo, "r", stdin);          
         execvp(args[0], &args[0]);
         fclose(arq);
       }
