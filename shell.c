@@ -17,8 +17,11 @@ int main() {
     for (unsigned j = 0; j < MAX_ARGS + 1; j++)
       args[j] = '\0';
 
-    printf("> ");
-    fgets(comando, MAX, stdin);
+    do {
+      printf("> ");
+      fgets(comando, MAX, stdin);
+    } while (strncmp(comando, "\n", 1) == 0);
+    
     comando[strlen(comando) - 1] = '\0';
 
     char* str = strtok(comando, " "), *nomeArquivo = NULL;
