@@ -21,7 +21,7 @@ int main() {
     fgets(comando, MAX, stdin);
     comando[strlen(comando) - 1] = '\0';
 
-    char* str = strtok(comando, " "), nomeArquivo = NULL;
+    char* str = strtok(comando, " "), *nomeArquivo = NULL;
     unsigned i, op;
     for (i = 0; str != NULL && i < MAX_ARGS; str = strtok(NULL, " "), i ++){
         if(!strncmp(str, ">", 1)){
@@ -42,8 +42,11 @@ int main() {
     }
 
     bool segundoPlano = false;
-    if(!strcmp(args[i - 1], "&")){
-      args[i - 1] = '\0';  
+    char* ultimoCaractere = args[i - 1] + strlen(args[i - 1]) - 1;
+    if(!strcmp(ultimoCaractere, "&")){
+      *ultimoCaractere = '\0';  
+      if(!strcmp(args[i - 1], ""))
+        args[i - 1] = NULL;
       segundoPlano = true;
     }
     
